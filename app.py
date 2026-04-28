@@ -96,12 +96,24 @@ def styler_master(row):
 
 def carregar_dados():
     try:
-        # CERTIFIQUE-SE DE QUE O NOME ABAIXO É O MESMO DO GITHUB
+        # 1. Lê o novo arquivo que você subiu
         df = pd.read_csv("BASE_APP_VIABILIDADE - PRODUTOS.csv", sep=";")
+        
+        # 2. LIMPEZA TOTAL: Remove espaços extras e padroniza os nomes das colunas
         df.columns = df.columns.str.strip()
+        
+        # 3. GARANTIA: Se a coluna estiver com outro nome (ou minúscula), nós renomeamos
+        # Isso evita o erro KeyError
+        mapeamento = {
+            'Grupo/Família (Abrev.)': 'GRUPO/FAMILIA (Abrev.)',
+            'grupo/familia (abrev.)': 'GRUPO/FAMILIA (Abrev.)',
+            'Grupo/Familia (Abrev.)': 'GRUPO/FAMILIA (Abrev.)'
+        }
+        df = df.rename(columns=mapeamento)
+        
         return df
     except Exception as e:
-        st.error(f"Erro ao carregar banco: {e}")
+        st.error(f"Erro crítico ao carregar o banco de dados: {e}")
         return pd.DataFrame()
 
 def styler_master_2026(df):
